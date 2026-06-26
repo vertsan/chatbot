@@ -1,9 +1,12 @@
 from collections.abc import AsyncGenerator, Sequence
 
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import joinedload
 
 from app.models.chat import Message
-from app.providers.ai import ChatMessage, ProviderRegistry, StreamChunk
+from app.models.provider import AIModel
+from app.providers.ai.base import ChatMessage, StreamChunk
 from app.providers.ai.registry import ProviderRegistry
 from app.repositories.provider import AIModelRepository
 
@@ -60,14 +63,19 @@ class AIService:
         self, model_id: str | None
     ) -> tuple:
         if model_id:
-            ai_model = await self.model_repo.get(model_id)
-            if ai_model:
+            stmt = (
+                select(AIModel)
+                .options(joinedload(AIModel.provider))
+                .where(AIModel.id == model_id)
+            )
+            result = await self.session.execute(stmt)
+            ai_model = result.unique().scalar_one_or_none()
+            if ai_model and ai_model.provider:
                 provider = ProviderRegistry.get(
                     ai_model.provider.name
                 )
                 return provider, ai_model.model_id
 
-        # Fall back to default
         for provider in ProviderRegistry.get_all().values():
             return provider, None
 

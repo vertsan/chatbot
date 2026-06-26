@@ -1,5 +1,3 @@
-from sqlalchemy import ForeignKey
-
 from app.database.base import Base
 from app.models.user import User, UserSession, UserAPIKey
 from app.models.organization import Organization, OrganizationMember

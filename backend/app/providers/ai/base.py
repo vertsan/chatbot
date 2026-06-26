@@ -59,7 +59,6 @@ class AIProvider(ABC):
         tools: list[dict] | None = None,
     ) -> AsyncGenerator[StreamChunk, None]:
         ...
-        yield
 
     @abstractmethod
     async def get_models(self) -> list[dict]:

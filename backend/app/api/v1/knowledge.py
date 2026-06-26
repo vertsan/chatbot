@@ -5,11 +5,9 @@ from app.api.dependencies.auth import get_current_user
 from app.database.session import get_session
 from app.models.user import User
 from app.schemas.rag import (
-    DocumentResponse,
     DocumentUploadResponse,
     KnowledgeBaseCreate,
     KnowledgeBaseResponse,
-    KnowledgeBaseUpdate,
     RAGQuery,
     RAGResult,
 )

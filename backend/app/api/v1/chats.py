@@ -1,5 +1,3 @@
-from collections.abc import AsyncGenerator
-
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sse_starlette.sse import EventSourceResponse
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -11,14 +9,11 @@ from app.models.user import User
 from app.schemas.chat import (
     ChatCreate,
     ChatResponse,
-    ChatUpdate,
     ConversationCreate,
     ConversationListResponse,
     ConversationResponse,
-    ConversationUpdate,
     MessageResponse,
     MessageSend,
-    StreamChunk,
 )
 from app.services.chat import ChatService
 
