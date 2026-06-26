@@ -21,4 +21,4 @@ class PromptTemplate(SoftDeletable):
     is_system: Mapped[bool] = mapped_column(default=False, nullable=False)
     variables: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     version: Mapped[int] = mapped_column(default=1, nullable=False)
-    metadata: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    metadata_: Mapped[dict | None] = mapped_column(JSON, nullable=True)

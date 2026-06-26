@@ -25,7 +25,7 @@ class Organization(SoftDeletable):
     )
     is_personal: Mapped[bool] = mapped_column(default=False, nullable=False)
     max_members: Mapped[int] = mapped_column(default=100, nullable=False)
-    metadata: Mapped[str | None] = mapped_column(Text, nullable=True)
+    metadata_: Mapped[str | None] = mapped_column(Text, nullable=True)
 
     owner: Mapped["User"] = relationship(foreign_keys=[owner_id])
     members: Mapped[list["OrganizationMember"]] = relationship(

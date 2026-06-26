@@ -17,4 +17,4 @@ class Notification(Entity):
     is_read: Mapped[bool] = mapped_column(default=False, nullable=False)
     is_dismissed: Mapped[bool] = mapped_column(default=False, nullable=False)
     action_url: Mapped[str | None] = mapped_column(String(512), nullable=True)
-    metadata: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    metadata_: Mapped[dict | None] = mapped_column(JSON, nullable=True)

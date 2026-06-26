@@ -40,7 +40,7 @@ class User(SoftDeletable):
     last_login_at: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True), nullable=True
     )
-    metadata: Mapped[str | None] = mapped_column(Text, nullable=True)
+    metadata_: Mapped[str | None] = mapped_column(Text, nullable=True)
 
     sessions: Mapped[list["UserSession"]] = relationship(
         back_populates="user", cascade="all, delete-orphan"

@@ -14,7 +14,7 @@ class VectorIndex(Entity):
     vector_id: Mapped[str] = mapped_column(String(255), nullable=False, index=True)
     dimensions: Mapped[int] = mapped_column(Integer, nullable=False)
     model_name: Mapped[str] = mapped_column(String(255), nullable=False)
-    metadata: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    metadata_: Mapped[dict | None] = mapped_column(JSON, nullable=True)
 
     __table_args__ = (
         {"extend_existing": True},

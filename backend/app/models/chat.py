@@ -43,7 +43,7 @@ class Chat(Entity):
     top_p: Mapped[float | None] = mapped_column(Float, default=1.0)
     max_tokens: Mapped[int | None] = mapped_column(Integer, nullable=True)
     is_active: Mapped[bool] = mapped_column(default=True, nullable=False)
-    metadata: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    metadata_: Mapped[dict | None] = mapped_column(JSON, nullable=True)
 
     user: Mapped["User"] = relationship()
     model: Mapped["AIModel"] = relationship()
@@ -75,7 +75,7 @@ class Conversation(SoftDeletable):
     token_count: Mapped[int] = mapped_column(Integer, default=0)
     message_count: Mapped[int] = mapped_column(Integer, default=0)
     summary: Mapped[str | None] = mapped_column(Text, nullable=True)
-    metadata: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    metadata_: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     last_message_at: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True), nullable=True
     )
@@ -110,7 +110,7 @@ class Message(Entity):
     total_tokens: Mapped[int | None] = mapped_column(Integer, nullable=True)
     latency_ms: Mapped[int | None] = mapped_column(Integer, nullable=True)
     finish_reason: Mapped[str | None] = mapped_column(String(50), nullable=True)
-    metadata: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    metadata_: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     is_edited: Mapped[bool] = mapped_column(default=False, nullable=False)
     parent_id: Mapped[str | None] = mapped_column(
         String(36), ForeignKey("messages.id"), nullable=True
@@ -133,6 +133,6 @@ class Attachment(Entity):
     file_size: Mapped[int] = mapped_column(Integer, nullable=False)
     mime_type: Mapped[str] = mapped_column(String(127), nullable=False)
     storage_type: Mapped[str] = mapped_column(String(50), default="local")
-    metadata: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    metadata_: Mapped[dict | None] = mapped_column(JSON, nullable=True)
 
     message: Mapped["Message"] = relationship(back_populates="attachments")

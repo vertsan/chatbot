@@ -39,7 +39,7 @@ class KnowledgeBase(SoftDeletable):
     chunk_size: Mapped[int] = mapped_column(Integer, default=1000)
     chunk_overlap: Mapped[int] = mapped_column(Integer, default=200)
     is_active: Mapped[bool] = mapped_column(default=True, nullable=False)
-    metadata: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    metadata_: Mapped[dict | None] = mapped_column(JSON, nullable=True)
 
     documents: Mapped[list["Document"]] = relationship(
         back_populates="knowledge_base", cascade="all, delete-orphan"
@@ -63,7 +63,7 @@ class Document(SoftDeletable):
     status: Mapped[DocumentStatus] = mapped_column(default=DocumentStatus.PENDING)
     chunk_count: Mapped[int] = mapped_column(Integer, default=0)
     error_message: Mapped[str | None] = mapped_column(Text, nullable=True)
-    metadata: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    metadata_: Mapped[dict | None] = mapped_column(JSON, nullable=True)
 
     knowledge_base: Mapped["KnowledgeBase"] = relationship(
         back_populates="documents"
@@ -85,6 +85,6 @@ class DocumentChunk(Entity):
     embedding_id: Mapped[str | None] = mapped_column(
         String(36), ForeignKey("vector_indices.id"), nullable=True
     )
-    metadata: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    metadata_: Mapped[dict | None] = mapped_column(JSON, nullable=True)
 
     document: Mapped["Document"] = relationship(back_populates="chunks")

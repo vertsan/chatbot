@@ -32,7 +32,7 @@ class AIProvider(Entity):
     config: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     rate_limit: Mapped[int | None] = mapped_column(Integer, nullable=True)
     max_connections: Mapped[int | None] = mapped_column(Integer, nullable=True)
-    metadata: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    metadata_: Mapped[dict | None] = mapped_column(JSON, nullable=True)
 
     models: Mapped[list["AIModel"]] = relationship(
         back_populates="provider", cascade="all, delete-orphan"
@@ -60,6 +60,6 @@ class AIModel(Entity):
     output_price_per_1k: Mapped[float | None] = mapped_column(Float, nullable=True)
     is_active: Mapped[bool] = mapped_column(default=True, nullable=False)
     is_default: Mapped[bool] = mapped_column(default=False, nullable=False)
-    metadata: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    metadata_: Mapped[dict | None] = mapped_column(JSON, nullable=True)
 
     provider: Mapped["AIProvider"] = relationship(back_populates="models")
