@@ -4,7 +4,7 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
-from app.models.knowledge import Document, DocumentChunk, KnowledgeBase
+from app.models.knowledge import Document, KnowledgeBase
 from app.repositories.base import BaseRepository
 
 
@@ -16,14 +16,14 @@ class KnowledgeBaseRepository(BaseRepository[KnowledgeBase]):
         self, user_id: str, skip: int = 0, limit: int = 50
     ) -> tuple[Sequence[KnowledgeBase], int]:
         stmt = select(KnowledgeBase).where(
-            KnowledgeBase.user_id == user_id, KnowledgeBase.is_deleted == False
+            KnowledgeBase.user_id == user_id, not KnowledgeBase.is_deleted
         )
         count_stmt = (
             select(func.count())
             .select_from(KnowledgeBase)
             .where(
                 KnowledgeBase.user_id == user_id,
-                KnowledgeBase.is_deleted == False,
+                not KnowledgeBase.is_deleted,
             )
         )
         count_result = await self.session.execute(count_stmt)
@@ -42,14 +42,14 @@ class DocumentRepository(BaseRepository[Document]):
         self, kb_id: str, skip: int = 0, limit: int = 50
     ) -> tuple[Sequence[Document], int]:
         stmt = select(Document).where(
-            Document.knowledge_base_id == kb_id, Document.is_deleted == False
+            Document.knowledge_base_id == kb_id, not Document.is_deleted
         )
         count_stmt = (
             select(func.count())
             .select_from(Document)
             .where(
                 Document.knowledge_base_id == kb_id,
-                Document.is_deleted == False,
+                not Document.is_deleted,
             )
         )
         count_result = await self.session.execute(count_stmt)

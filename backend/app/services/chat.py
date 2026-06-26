@@ -1,16 +1,18 @@
-from datetime import datetime, timezone
+from collections.abc import AsyncGenerator
+from datetime import UTC, datetime
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models.chat import Chat, Conversation, Message, MessageRole
+from app.models.chat import MessageRole
+from app.providers.ai.base import StreamChunk
 from app.repositories.chat import (
     ChatRepository,
     ConversationRepository,
     MessageRepository,
 )
 from app.schemas.chat import ConversationCreate, MessageSend
-from app.services.base import ServiceResult
 from app.services.ai import AIService
+from app.services.base import ServiceResult
 
 
 class ChatService:
@@ -21,7 +23,7 @@ class ChatService:
         self.message_repo = MessageRepository(session)
 
     async def create_chat(
-        self, user_id: str, title: str, **kwargs
+        self, user_id: str, title: str, **kwargs: object
     ) -> ServiceResult:
         chat = await self.chat_repo.create(
             user_id=user_id, title=title, **kwargs
@@ -66,11 +68,16 @@ class ChatService:
         items, total = await self.conversation_repo.get_by_user(
             user_id, skip, limit, search, status
         )
-        return ServiceResult.ok({"items": items, "total": total, "page": skip // limit + 1, "page_size": limit})
+        return ServiceResult.ok({
+            "items": items,
+            "total": total,
+            "page": skip // limit + 1,
+            "page_size": limit,
+        })
 
     async def send_message(
         self,
-        user_id: str,
+        _user_id: str,
         conversation_id: str,
         data: MessageSend,
     ) -> ServiceResult:
@@ -87,7 +94,7 @@ class ChatService:
 
         await self.conversation_repo.update(
             conversation_id,
-            last_message_at=datetime.now(timezone.utc),
+            last_message_at=datetime.now(UTC),
         )
         await self.conversation_repo.update_message_count(conversation_id)
 
@@ -95,16 +102,16 @@ class ChatService:
 
     async def stream_message(
         self,
-        user_id: str,
+        _user_id: str,
         conversation_id: str,
         data: MessageSend,
-    ):
+    ) -> AsyncGenerator[StreamChunk]:
         conversation = await self.conversation_repo.get(conversation_id)
         if not conversation:
             return
 
         # Save user message
-        user_message = await self.message_repo.create(
+        await self.message_repo.create(
             conversation_id=conversation_id,
             role=data.role,
             content=data.content,
@@ -145,6 +152,6 @@ class ChatService:
 
         await self.conversation_repo.update(
             conversation_id,
-            last_message_at=datetime.now(timezone.utc),
+            last_message_at=datetime.now(UTC),
         )
         await self.conversation_repo.update_message_count(conversation_id)

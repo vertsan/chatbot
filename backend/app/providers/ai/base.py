@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
+from collections.abc import AsyncGenerator
 from dataclasses import dataclass, field
-from typing import Any, AsyncGenerator
 
 
 @dataclass
@@ -57,7 +57,7 @@ class AIProvider(ABC):
         top_p: float | None = None,
         max_tokens: int | None = None,
         tools: list[dict] | None = None,
-    ) -> AsyncGenerator[StreamChunk, None]:
+    ) -> AsyncGenerator[StreamChunk]:
         ...
 
     @abstractmethod

@@ -1,4 +1,5 @@
-from typing import Any, AsyncGenerator
+from collections.abc import AsyncGenerator
+from typing import Any
 
 import httpx
 
@@ -52,14 +53,14 @@ class OllamaProvider(AIProvider):
         top_p: float | None = None,
         max_tokens: int | None = None,
         tools: list[dict] | None = None,
-    ) -> AsyncGenerator[StreamChunk, None]:
+    ) -> AsyncGenerator[StreamChunk]:
         payload = self._build_payload(
             messages, model, system_prompt, temperature, top_p, max_tokens, tools
         )
         payload["stream"] = True
 
-        async with httpx.AsyncClient(base_url=self.base_url) as client:
-            async with client.stream("POST", "/api/chat", json=payload) as response:
+        async with httpx.AsyncClient(base_url=self.base_url) as client, \
+                client.stream("POST", "/api/chat", json=payload) as response:
                 response.raise_for_status()
                 async for line in response.aiter_lines():
                     if not line:

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.dependencies.auth import get_current_user
@@ -21,7 +21,7 @@ async def create_knowledge_base(
     request: KnowledgeBaseCreate,
     current_user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_session),
-):
+) -> dict:
     service = RAGService(session)
     result = await service.create_knowledge_base(
         user_id=current_user.id,
@@ -34,16 +34,21 @@ async def create_knowledge_base(
     return result.data
 
 
-@router.post("/bases/{kb_id}/documents/upload", response_model=DocumentUploadResponse, status_code=201)
+@router.post(
+    "/bases/{kb_id}/documents/upload",
+    response_model=DocumentUploadResponse,
+    status_code=201,
+)
 async def upload_document(
     kb_id: str,
     file: UploadFile = File(...),
     current_user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_session),
-):
-    import aiofiles
+) -> dict:
     import os
     from pathlib import Path
+
+    import aiofiles
 
     upload_dir = Path("uploads/documents")
     upload_dir.mkdir(parents=True, exist_ok=True)
@@ -69,11 +74,11 @@ async def upload_document(
 
 @router.post("/bases/{kb_id}/documents/{doc_id}/process")
 async def process_document(
-    kb_id: str,
+    _kb_id: str,
     doc_id: str,
-    current_user: User = Depends(get_current_user),
+    _current_user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_session),
-):
+) -> dict:
     service = RAGService(session)
     result = await service.process_document(doc_id)
     if not result.success:
@@ -84,9 +89,9 @@ async def process_document(
 @router.post("/search", response_model=RAGResult)
 async def search_knowledge_base(
     request: RAGQuery,
-    current_user: User = Depends(get_current_user),
+    _current_user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_session),
-):
+) -> dict:
     service = RAGService(session)
     result = await service.search(
         kb_id=request.knowledge_base_id,

@@ -1,5 +1,4 @@
-from datetime import datetime, timezone
-from typing import Any
+from datetime import UTC, datetime
 from uuid import uuid4
 
 from sqlalchemy import DateTime, String, event
@@ -22,13 +21,13 @@ class Entity(Base):
     )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
-        default=lambda: datetime.now(timezone.utc),
+        default=lambda: datetime.now(UTC),
         nullable=False,
     )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
-        default=lambda: datetime.now(timezone.utc),
-        onupdate=lambda: datetime.now(timezone.utc),
+        default=lambda: datetime.now(UTC),
+        onupdate=lambda: datetime.now(UTC),
         nullable=False,
     )
 
@@ -43,5 +42,5 @@ class SoftDeletable(Entity):
 
 
 @event.listens_for(SoftDeletable, "load", propagate=True)
-def receive_load(target: SoftDeletable, context: Any) -> None:
+def receive_load(target: SoftDeletable, _context: object) -> None:
     target.is_deleted = target.deleted_at is not None

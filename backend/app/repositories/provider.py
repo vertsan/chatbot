@@ -23,13 +23,13 @@ class AIProviderRepository(BaseRepository[AIProvider]):
 
     async def get_default(self) -> AIProvider | None:
         stmt = select(AIProvider).where(
-            AIProvider.is_default == True, AIProvider.is_active == True
+            AIProvider.is_default, AIProvider.is_active
         )
         result = await self.session.execute(stmt)
         return result.scalar_one_or_none()
 
     async def get_active(self) -> Sequence[AIProvider]:
-        stmt = select(AIProvider).where(AIProvider.is_active == True)
+        stmt = select(AIProvider).where(AIProvider.is_active)
         result = await self.session.execute(stmt)
         return result.scalars().all()
 
@@ -42,7 +42,7 @@ class AIModelRepository(BaseRepository[AIModel]):
         self, provider_id: str
     ) -> Sequence[AIModel]:
         stmt = select(AIModel).where(
-            AIModel.provider_id == provider_id, AIModel.is_active == True
+            AIModel.provider_id == provider_id, AIModel.is_active
         )
         result = await self.session.execute(stmt)
         return result.scalars().all()
@@ -52,8 +52,8 @@ class AIModelRepository(BaseRepository[AIModel]):
     ) -> AIModel | None:
         stmt = select(AIModel).where(
             AIModel.provider_id == provider_id,
-            AIModel.is_default == True,
-            AIModel.is_active == True,
+            AIModel.is_default,
+            AIModel.is_active,
         )
         result = await self.session.execute(stmt)
         return result.scalar_one_or_none()

@@ -10,8 +10,6 @@ from app.schemas.auth import (
     ChangePasswordRequest,
     LoginRequest,
     OAuthLoginRequest,
-    PasswordResetConfirm,
-    PasswordResetRequest,
     RefreshTokenRequest,
     RegisterRequest,
     TokenResponse,
@@ -109,7 +107,7 @@ async def change_password(
 
 @router.post("/logout", response_model=MessageResponse)
 async def logout(
-    current_user: User = Depends(get_current_user),
-    session: AsyncSession = Depends(get_session),
+    _current_user: User = Depends(get_current_user),
+    _session: AsyncSession = Depends(get_session),
 ) -> dict:
     return {"message": "Logged out successfully", "status_code": 200}

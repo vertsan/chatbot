@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from typing import Any
 
 from jose import JWTError, jwt
@@ -10,7 +10,7 @@ def create_access_token(
     subject: str, extra_claims: dict[str, Any] | None = None
 ) -> str:
     expires_delta = timedelta(minutes=settings.jwt_access_token_expire_minutes)
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     claims = {
         "sub": subject,
         "iat": now,
@@ -26,7 +26,7 @@ def create_access_token(
 
 def create_refresh_token(subject: str) -> str:
     expires_delta = timedelta(days=settings.jwt_refresh_token_expire_days)
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     claims = {
         "sub": subject,
         "iat": now,

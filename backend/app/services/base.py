@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Any
 
 
@@ -10,7 +10,11 @@ class ServiceResult:
     status_code: int = 200
 
     @classmethod
-    def ok(cls, data: Any = None, status_code: int = 200) -> "ServiceResult":
+    def ok(
+        cls,
+        data: dict[str, Any] | list[Any] | str | None = None,
+        status_code: int = 200,
+    ) -> "ServiceResult":
         return cls(success=True, data=data, status_code=status_code)
 
     @classmethod

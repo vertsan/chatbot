@@ -1,5 +1,5 @@
 from collections.abc import Sequence
-from typing import Any, Generic, TypeVar
+from typing import Any
 
 from sqlalchemy import Select, delete, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -7,15 +7,13 @@ from sqlalchemy.sql import func
 
 from app.database.base import Entity
 
-T = TypeVar("T", bound=Entity)
 
-
-class BaseRepository(Generic[T]):
+class BaseRepository[T: Entity]:
     def __init__(self, session: AsyncSession, model: type[T]) -> None:
         self.session = session
         self.model = model
 
-    async def create(self, **kwargs: Any) -> T:
+    async def create(self, **kwargs: object) -> T:
         instance = self.model(**kwargs)
         self.session.add(instance)
         await self.session.flush()
@@ -57,7 +55,7 @@ class BaseRepository(Generic[T]):
         items = result.scalars().all()
         return items, total
 
-    async def update(self, id: str, **kwargs: Any) -> T | None:
+    async def update(self, id: str, **kwargs: object) -> T | None:
         stmt = (
             update(self.model)
             .where(self.model.id == id)
@@ -81,7 +79,7 @@ class BaseRepository(Generic[T]):
         await self.session.flush()
         return result.rowcount > 0
 
-    async def exists(self, **filters: Any) -> bool:
+    async def exists(self, **filters: object) -> bool:
         stmt = select(self.model)
         for field, value in filters.items():
             column = getattr(self.model, field, None)
@@ -92,7 +90,7 @@ class BaseRepository(Generic[T]):
         return result.scalar_one_or_none() is not None
 
     def _apply_filters(
-        self, stmt: Select, filters: dict[str, Any]
+        self, stmt: Select, filters: dict[str, object]
     ) -> Select:
         for field, value in filters.items():
             column = getattr(self.model, field, None)

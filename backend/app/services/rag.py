@@ -1,12 +1,9 @@
-import hashlib
-from collections.abc import AsyncGenerator, Sequence
 from pathlib import Path
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.config import settings
-from app.models.knowledge import Document, DocumentChunk, DocumentStatus
-from app.repositories.knowledge import KnowledgeBaseRepository, DocumentRepository
+from app.models.knowledge import DocumentChunk, DocumentStatus
+from app.repositories.knowledge import DocumentRepository, KnowledgeBaseRepository
 from app.services.base import ServiceResult
 
 
@@ -17,7 +14,7 @@ class RAGService:
         self.doc_repo = DocumentRepository(session)
 
     async def create_knowledge_base(
-        self, user_id: str, name: str, **kwargs
+        self, user_id: str, name: str, **kwargs: object
     ) -> ServiceResult:
         kb = await self.kb_repo.create(
             user_id=user_id,
@@ -33,7 +30,7 @@ class RAGService:
         file_name: str,
         file_path: str,
         file_size: int,
-        mime_type: str,
+        _mime_type: str,
     ) -> ServiceResult:
         kb = await self.kb_repo.get(kb_id)
         if not kb:
@@ -72,7 +69,7 @@ class RAGService:
             )
 
             for i, chunk_content in enumerate(chunks):
-                chunk = await self.session.execute(
+                await self.session.execute(
                     # Insert chunk
                     await self._create_chunk(doc.id, i, chunk_content)
                 )
@@ -132,7 +129,7 @@ class RAGService:
             "total_chunks": len(relevant_chunks),
         })
 
-    def _detect_document_type(self, file_name: str, mime_type: str) -> str:
+    def _detect_document_type(self, file_name: str, _mime_type: str) -> str:
         ext = Path(file_name).suffix.lower()
         type_map = {
             ".pdf": "pdf",

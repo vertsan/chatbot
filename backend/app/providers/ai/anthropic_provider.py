@@ -1,4 +1,5 @@
-from typing import Any, AsyncGenerator
+from collections.abc import AsyncGenerator
+from typing import Any
 
 import httpx
 
@@ -58,7 +59,7 @@ class AnthropicProvider(AIProvider):
         top_p: float | None = None,
         max_tokens: int | None = None,
         tools: list[dict] | None = None,
-    ) -> AsyncGenerator[StreamChunk, None]:
+    ) -> AsyncGenerator[StreamChunk]:
         headers = self._headers()
         headers["Accept"] = "text/event-stream"
         payload = self._build_payload(
@@ -66,22 +67,21 @@ class AnthropicProvider(AIProvider):
         )
         payload["stream"] = True
 
-        async with httpx.AsyncClient() as client:
-            async with client.stream(
-                "POST",
-                f"{self.api_base}/messages",
-                headers=headers,
-                json=payload,
-            ) as response:
-                response.raise_for_status()
-                async for line in response.aiter_lines():
-                    if line.startswith("data: "):
-                        import json
-                        data = json.loads(line[6:])
-                        if data.get("type") == "content_block_delta":
-                            delta = data.get("delta", {})
-                            if delta.get("type") == "text_delta":
-                                yield StreamChunk(content=delta.get("text", ""))
+        async with httpx.AsyncClient() as client, client.stream(
+            "POST",
+            f"{self.api_base}/messages",
+            headers=headers,
+            json=payload,
+        ) as response:
+            response.raise_for_status()
+            async for line in response.aiter_lines():
+                if line.startswith("data: "):
+                    import json
+                    data = json.loads(line[6:])
+                    if data.get("type") == "content_block_delta":
+                        delta = data.get("delta", {})
+                        if delta.get("type") == "text_delta":
+                            yield StreamChunk(content=delta.get("text", ""))
 
     async def get_models(self) -> list[dict]:
         return [

@@ -2,12 +2,11 @@ from datetime import datetime
 from enum import Enum
 
 from sqlalchemy import (
-    Boolean,
+    JSON,
     DateTime,
     Float,
     ForeignKey,
     Integer,
-    JSON,
     String,
     Text,
 )

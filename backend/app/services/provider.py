@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.repositories.provider import AIModelRepository, AIProviderRepository
-from app.schemas.provider import AIProviderCreate, AIProviderUpdate
+from app.schemas.provider import AIProviderCreate
 from app.services.base import ServiceResult
 
 

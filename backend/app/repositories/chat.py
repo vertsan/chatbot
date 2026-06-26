@@ -36,11 +36,11 @@ class ConversationRepository(BaseRepository[Conversation]):
     ) -> tuple[Sequence[Conversation], int]:
         stmt = select(Conversation).where(
             Conversation.user_id == user_id,
-            Conversation.is_deleted == False,
+            not Conversation.is_deleted,
         )
         count_stmt = select(func.count()).select_from(Conversation).where(
             Conversation.user_id == user_id,
-            Conversation.is_deleted == False,
+            not Conversation.is_deleted,
         )
 
         if search:

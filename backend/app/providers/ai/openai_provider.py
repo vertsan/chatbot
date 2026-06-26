@@ -1,4 +1,5 @@
-from typing import Any, AsyncGenerator
+from collections.abc import AsyncGenerator
+from typing import Any
 
 from openai import AsyncOpenAI
 
@@ -60,7 +61,7 @@ class OpenAIProvider(AIProvider):
         top_p: float | None = None,
         max_tokens: int | None = None,
         tools: list[dict] | None = None,
-    ) -> AsyncGenerator[StreamChunk, None]:
+    ) -> AsyncGenerator[StreamChunk]:
         openai_messages = self._convert_messages(messages, system_prompt)
         kwargs = self._build_kwargs(model, temperature, top_p, max_tokens, tools)
 

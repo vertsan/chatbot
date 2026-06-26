@@ -85,6 +85,10 @@ line-length = 100
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "N", "W", "UP", "ANN", "ARG", "B", "C4", "ISC", "SIM", "TID"]
+ignore = ["B008"]
+
+[tool.ruff.lint.per-file-ignores]
+"app/models/*.py" = ["F821", "UP042"]
 
 [tool.ruff.format]
 quote-style = "double"

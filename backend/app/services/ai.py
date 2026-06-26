@@ -45,7 +45,7 @@ class AIService:
         temperature: float | None = None,
         top_p: float | None = None,
         max_tokens: int | None = None,
-    ) -> AsyncGenerator[StreamChunk, None]:
+    ) -> AsyncGenerator[StreamChunk]:
         provider, model = await self._resolve_provider(model_id)
         chat_messages = self._convert_messages(messages)
 

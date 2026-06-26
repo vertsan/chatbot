@@ -1,16 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.dependencies.auth import get_current_user, get_superuser
+from app.api.dependencies.auth import get_superuser
 from app.database.session import get_session
 from app.models.user import User
 from app.providers.ai.registry import ProviderRegistry
 from app.schemas.provider import (
-    AIModelCreate,
     AIModelResponse,
     AIProviderCreate,
     AIProviderResponse,
-    AIProviderUpdate,
 )
 from app.services.provider import ProviderService
 
@@ -21,7 +19,7 @@ router = APIRouter(prefix="/providers", tags=["Providers"])
 async def list_providers(
     session: AsyncSession = Depends(get_session),
     _: User = Depends(get_superuser),
-):
+) -> list[dict]:
     service = ProviderService(session)
     return await service.get_all_providers()
 
@@ -31,7 +29,7 @@ async def create_provider(
     request: AIProviderCreate,
     session: AsyncSession = Depends(get_session),
     _: User = Depends(get_superuser),
-):
+) -> dict:
     service = ProviderService(session)
     result = await service.create_provider(request)
     if not result.success:
@@ -44,7 +42,7 @@ async def list_provider_models(
     provider_id: str,
     session: AsyncSession = Depends(get_session),
     _: User = Depends(get_superuser),
-):
+) -> dict:
     service = ProviderService(session)
     result = await service.get_provider_models(provider_id)
     if not result.success:
@@ -53,7 +51,7 @@ async def list_provider_models(
 
 
 @router.get("/available")
-async def list_available_providers():
+async def list_available_providers() -> list[dict]:
     providers = ProviderRegistry.get_all()
     return [
         {"name": name, "capabilities": provider.capabilities}

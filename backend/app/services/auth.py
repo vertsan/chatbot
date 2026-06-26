@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -8,7 +8,7 @@ from app.core.security.jwt import (
     decode_token,
 )
 from app.core.security.password import hash_password, verify_password
-from app.models.user import AuthProvider, User
+from app.models.user import AuthProvider
 from app.repositories.user import UserRepository
 from app.services.base import ServiceResult
 
@@ -82,7 +82,7 @@ class AuthService:
                 display_name=display_name,
                 auth_provider=provider,
                 auth_provider_id=provider_id,
-                email_verified_at=datetime.now(timezone.utc),
+                email_verified_at=datetime.now(UTC),
                 is_active=True,
             )
 

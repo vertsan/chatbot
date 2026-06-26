@@ -1,6 +1,8 @@
+from collections.abc import AsyncGenerator
+
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sse_starlette.sse import EventSourceResponse
 from sqlalchemy.ext.asyncio import AsyncSession
+from sse_starlette.sse import EventSourceResponse
 
 from app.api.dependencies.auth import get_current_user
 from app.api.dependencies.pagination import pagination_params
@@ -25,7 +27,7 @@ async def create_chat(
     request: ChatCreate,
     current_user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_session),
-):
+) -> dict:
     service = ChatService(session)
     result = await service.create_chat(
         user_id=current_user.id,
@@ -45,7 +47,7 @@ async def list_chats(
     session: AsyncSession = Depends(get_session),
     skip: int = Query(0, ge=0),
     limit: int = Query(50, ge=1, le=200),
-):
+) -> dict:
     service = ChatService(session)
     result = await service.get_user_chats(current_user.id, skip, limit)
     return result.data
@@ -56,7 +58,7 @@ async def create_conversation(
     request: ConversationCreate,
     current_user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_session),
-):
+) -> dict:
     service = ChatService(session)
     result = await service.create_conversation(current_user.id, request)
     if not result.success:
@@ -71,7 +73,7 @@ async def list_conversations(
     current_user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_session),
     params: dict = Depends(pagination_params),
-):
+) -> dict:
     service = ChatService(session)
     result = await service.get_conversations(
         user_id=current_user.id,
@@ -82,13 +84,17 @@ async def list_conversations(
     return result.data
 
 
-@router.post("/conversations/{conversation_id}/messages", response_model=MessageResponse, status_code=201)
+@router.post(
+    "/conversations/{conversation_id}/messages",
+    response_model=MessageResponse,
+    status_code=201,
+)
 async def send_message(
     conversation_id: str,
     request: MessageSend,
     current_user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_session),
-):
+) -> dict:
     service = ChatService(session)
     result = await service.send_message(
         user_id=current_user.id,
@@ -108,10 +114,10 @@ async def stream_message(
     request: MessageSend,
     current_user: User = Depends(get_current_user),
     session: AsyncSession = Depends(get_session),
-):
+) -> EventSourceResponse:
     service = ChatService(session)
 
-    async def event_generator():
+    async def event_generator() -> AsyncGenerator[dict]:
         async for chunk in service.stream_message(
             user_id=current_user.id,
             conversation_id=conversation_id,

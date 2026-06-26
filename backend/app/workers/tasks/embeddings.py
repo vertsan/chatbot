@@ -1,5 +1,4 @@
 import structlog
-from celery import shared_task
 
 from app.workers.celery_app import celery_app
 
@@ -7,7 +6,7 @@ logger = structlog.get_logger()
 
 
 @celery_app.task(bind=True, max_retries=3)
-def generate_embeddings(self, document_id: str) -> dict:
+def generate_embeddings(self: object, document_id: str) -> dict:
     logger.info("Generating embeddings", document_id=document_id)
     try:
         # TODO: Implement embedding generation
@@ -18,7 +17,7 @@ def generate_embeddings(self, document_id: str) -> dict:
 
 
 @celery_app.task(bind=True, max_retries=3)
-def process_document_task(self, document_id: str) -> dict:
+def process_document_task(self: object, document_id: str) -> dict:
     logger.info("Processing document", document_id=document_id)
     try:
         # TODO: Implement document processing (parse, chunk, embed)

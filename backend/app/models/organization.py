@@ -1,6 +1,6 @@
 from enum import Enum
 
-from sqlalchemy import Boolean, ForeignKey, String, Text
+from sqlalchemy import ForeignKey, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database.base import Entity, SoftDeletable

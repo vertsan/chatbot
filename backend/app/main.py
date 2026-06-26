@@ -1,6 +1,5 @@
 import structlog
 from fastapi import FastAPI, Request
-from fastapi.exception_handlers import http_exception_handler
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
@@ -35,7 +34,7 @@ def create_app() -> FastAPI:
 
     @app.exception_handler(StarletteHTTPException)
     async def custom_http_exception_handler(
-        request: Request, exc: StarletteHTTPException
+        _request: Request, exc: StarletteHTTPException
     ) -> JSONResponse:
         return JSONResponse(
             status_code=exc.status_code,

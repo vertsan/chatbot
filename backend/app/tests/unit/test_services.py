@@ -1,18 +1,17 @@
+from unittest.mock import AsyncMock, MagicMock
+
 import pytest
-from unittest.mock import AsyncMock, MagicMock, patch
 
 from app.services.auth import AuthService
-from app.services.chat import ChatService
-from app.schemas.chat import ConversationCreate, MessageSend
 
 
 @pytest.fixture
-def mock_session():
+def mock_session() -> AsyncMock:
     return AsyncMock()
 
 
 class TestAuthService:
-    async def test_register_success(self, mock_session):
+    async def test_register_success(self, mock_session: MagicMock) -> None:
         service = AuthService(mock_session)
         service.user_repo = AsyncMock()
         service.user_repo.get_by_email = AsyncMock(return_value=None)
@@ -28,7 +27,7 @@ class TestAuthService:
         assert result.success
         assert result.status_code == 201
 
-    async def test_register_duplicate(self, mock_session):
+    async def test_register_duplicate(self, mock_session: MagicMock) -> None:
         service = AuthService(mock_session)
         service.user_repo = AsyncMock()
         service.user_repo.get_by_email = AsyncMock(
@@ -43,7 +42,7 @@ class TestAuthService:
         assert not result.success
         assert result.status_code == 409
 
-    async def test_login_invalid(self, mock_session):
+    async def test_login_invalid(self, mock_session: MagicMock) -> None:
         service = AuthService(mock_session)
         service.user_repo = AsyncMock()
         service.user_repo.get_by_email = AsyncMock(return_value=None)

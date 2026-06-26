@@ -1,30 +1,29 @@
-from enum import Enum
+from enum import StrEnum
 from pathlib import Path
-from typing import Optional
 
 from pydantic import PostgresDsn, RedisDsn, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-class Environment(str, Enum):
+class Environment(StrEnum):
     DEVELOPMENT = "development"
     STAGING = "staging"
     PRODUCTION = "production"
 
 
-class StorageType(str, Enum):
+class StorageType(StrEnum):
     LOCAL = "local"
     S3 = "s3"
 
 
-class VectorStoreType(str, Enum):
+class VectorStoreType(StrEnum):
     PGVECTOR = "pgvector"
     CHROMA = "chroma"
     QDRANT = "qdrant"
     MILVUS = "milvus"
 
 
-class LogFormat(str, Enum):
+class LogFormat(StrEnum):
     JSON = "json"
     TEXT = "text"
 
@@ -59,9 +58,9 @@ class Settings(BaseSettings):
 
     # Storage
     storage_type: StorageType = StorageType.S3
-    s3_endpoint: Optional[str] = None
-    s3_access_key: Optional[str] = None
-    s3_secret_key: Optional[str] = None
+    s3_endpoint: str | None = None
+    s3_access_key: str | None = None
+    s3_secret_key: str | None = None
     s3_bucket: str = "chatbot-uploads"
     s3_region: str = "us-east-1"
     local_storage_path: Path = Path("uploads")
@@ -73,22 +72,22 @@ class Settings(BaseSettings):
     jwt_refresh_token_expire_days: int = 7
 
     # OAuth
-    oauth_google_client_id: Optional[str] = None
-    oauth_google_client_secret: Optional[str] = None
-    oauth_github_client_id: Optional[str] = None
-    oauth_github_client_secret: Optional[str] = None
+    oauth_google_client_id: str | None = None
+    oauth_google_client_secret: str | None = None
+    oauth_github_client_id: str | None = None
+    oauth_github_client_secret: str | None = None
 
     # AI Providers
-    openai_api_key: Optional[str] = None
+    openai_api_key: str | None = None
     openai_api_base: str = "https://api.openai.com/v1"
-    anthropic_api_key: Optional[str] = None
-    google_api_key: Optional[str] = None
-    azure_openai_api_key: Optional[str] = None
-    azure_openai_endpoint: Optional[str] = None
+    anthropic_api_key: str | None = None
+    google_api_key: str | None = None
+    azure_openai_api_key: str | None = None
+    azure_openai_endpoint: str | None = None
     azure_openai_api_version: str = "2024-02-15-preview"
-    huggingface_api_key: Optional[str] = None
-    groq_api_key: Optional[str] = None
-    deepseek_api_key: Optional[str] = None
+    huggingface_api_key: str | None = None
+    groq_api_key: str | None = None
+    deepseek_api_key: str | None = None
     ollama_base_url: str = "http://localhost:11434"
     vllm_base_url: str = "http://localhost:8000"
     lm_studio_base_url: str = "http://localhost:1234"
@@ -127,9 +126,9 @@ class Settings(BaseSettings):
     log_format: LogFormat = LogFormat.JSON
 
     # Observability
-    sentry_dsn: Optional[str] = None
+    sentry_dsn: str | None = None
     otel_enabled: bool = False
-    otel_exporter_otlp_endpoint: Optional[str] = None
+    otel_exporter_otlp_endpoint: str | None = None
 
     @property
     def is_production(self) -> bool:

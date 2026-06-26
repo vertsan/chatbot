@@ -1,4 +1,5 @@
-from typing import Any, AsyncGenerator
+from collections.abc import AsyncGenerator
+from typing import Any
 
 import httpx
 
@@ -63,30 +64,29 @@ class GeminiProvider(AIProvider):
         top_p: float | None = None,
         max_tokens: int | None = None,
         tools: list[dict] | None = None,
-    ) -> AsyncGenerator[StreamChunk, None]:
+    ) -> AsyncGenerator[StreamChunk]:
         url = f"{self.api_base}/models/{model or 'gemini-2.0-flash'}:streamGenerateContent"
         payload = self._build_payload(
             messages, system_prompt, temperature, top_p, max_tokens, tools
         )
 
-        async with httpx.AsyncClient() as client:
-            async with client.stream(
-                "POST",
-                url,
-                params={"key": self.api_key, "alt": "sse"},
-                json=payload,
-            ) as response:
-                response.raise_for_status()
-                async for line in response.aiter_lines():
-                    if line.startswith("data: "):
-                        import json
-                        data = json.loads(line[6:])
-                        candidates = data.get("candidates", [])
-                        if candidates:
-                            content = candidates[0].get("content", {})
-                            parts = content.get("parts", [])
-                            for part in parts:
-                                yield StreamChunk(content=part.get("text", ""))
+        async with httpx.AsyncClient() as client, client.stream(
+            "POST",
+            url,
+            params={"key": self.api_key, "alt": "sse"},
+            json=payload,
+        ) as response:
+            response.raise_for_status()
+            async for line in response.aiter_lines():
+                if line.startswith("data: "):
+                    import json
+                    data = json.loads(line[6:])
+                    candidates = data.get("candidates", [])
+                    if candidates:
+                        content = candidates[0].get("content", {})
+                        parts = content.get("parts", [])
+                        for part in parts:
+                            yield StreamChunk(content=part.get("text", ""))
 
     async def get_models(self) -> list[dict]:
         async with httpx.AsyncClient() as client:
@@ -108,7 +108,7 @@ class GeminiProvider(AIProvider):
         temperature: float | None,
         top_p: float | None,
         max_tokens: int | None,
-        tools: list[dict] | None,
+        _tools: list[dict] | None,
     ) -> dict:
         contents = []
         for msg in messages:

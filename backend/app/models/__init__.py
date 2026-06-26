@@ -1,15 +1,15 @@
 from app.database.base import Base
-from app.models.user import User, UserSession, UserAPIKey
-from app.models.organization import Organization, OrganizationMember
-from app.models.role import Role, Permission, RolePermission
-from app.models.chat import Chat, Conversation, Message, Attachment
-from app.models.provider import AIProvider, AIModel
-from app.models.prompt import PromptTemplate
-from app.models.knowledge import KnowledgeBase, Document, DocumentChunk
-from app.models.vector import VectorIndex
-from app.models.settings import SystemSetting, UserSetting
 from app.models.audit import AuditLog
+from app.models.chat import Attachment, Chat, Conversation, Message
+from app.models.knowledge import Document, DocumentChunk, KnowledgeBase
 from app.models.notification import Notification
+from app.models.organization import Organization, OrganizationMember
+from app.models.prompt import PromptTemplate
+from app.models.provider import AIModel, AIProvider
+from app.models.role import Permission, Role, RolePermission
+from app.models.settings import SystemSetting, UserSetting
+from app.models.user import User, UserAPIKey, UserSession
+from app.models.vector import VectorIndex
 
 __all__ = [
     "Base",
