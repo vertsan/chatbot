@@ -15,9 +15,7 @@ export function useChat() {
     messages,
     isStreaming,
     streamingContent,
-    setConversations,
     setActiveConversation,
-    addMessages,
     appendMessage,
     setStreaming,
     appendStreamContent,
@@ -73,6 +71,5 @@ export function useChat() {
     appendStreamContent,
     setStreaming,
     appendMessage,
-    addMessages,
   };
 }

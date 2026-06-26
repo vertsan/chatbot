@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -31,7 +30,6 @@ type LoginForm = z.infer<typeof loginSchema>;
 type RegisterForm = z.infer<typeof registerSchema>;
 
 export function LoginPage() {
-  const navigate = useNavigate();
   const { login, register, loginError, isLoggingIn, isRegistering } =
     useAuth();
   const [isRegisterMode, setIsRegisterMode] = useState(false);

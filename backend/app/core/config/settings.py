@@ -44,17 +44,17 @@ class Settings(BaseSettings):
     environment: Environment = Environment.DEVELOPMENT
 
     # Database
-    database_url: PostgresDsn = "postgresql+asyncpg://chatbot:chatbot@localhost:5432/chatbot"  # type: ignore
+    database_url: PostgresDsn = "postgresql+asyncpg://chatbot:chatbot@localhost:5432/chatbot"
     database_pool_size: int = 20
     database_max_overflow: int = 40
 
     # Redis
-    redis_url: RedisDsn = "redis://localhost:6379/0"  # type: ignore[assignment]
+    redis_url: RedisDsn = "redis://localhost:6379/0"
     redis_max_connections: int = 50
 
     # Celery
-    celery_broker_url: RedisDsn = "redis://localhost:6379/1"  # type: ignore[assignment]
-    celery_result_backend: RedisDsn = "redis://localhost:6379/2"  # type: ignore[assignment]
+    celery_broker_url: RedisDsn = "redis://localhost:6379/1"
+    celery_result_backend: RedisDsn = "redis://localhost:6379/2"
 
     # Storage
     storage_type: StorageType = StorageType.S3

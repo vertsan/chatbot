@@ -9,15 +9,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { useThemeStore } from "@/store/theme";
 import {
   User,
   Palette,
   Key,
-  Shield,
-  Bell,
-  Monitor,
   Moon,
   Sun,
 } from "lucide-react";

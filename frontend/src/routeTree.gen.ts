@@ -1,4 +1,4 @@
-import { createRootRoute, createRoute, createRouter } from "@tanstack/react-router";
+import { createRootRoute, createRoute } from "@tanstack/react-router";
 import { ChatLayout } from "@/components/layouts";
 import { LoginPage } from "@/pages/login";
 import { ChatPage } from "@/pages/chat";

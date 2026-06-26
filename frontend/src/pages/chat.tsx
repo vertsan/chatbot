@@ -1,7 +1,6 @@
 import { useCallback } from "react";
 import { useChatStore } from "@/store/chat";
 import { ChatWindow } from "@/features/chat/chat-window";
-import { api } from "@/api/client";
 
 export function ChatPage() {
   const {
@@ -13,7 +12,6 @@ export function ChatPage() {
     appendStreamContent,
     setStreaming,
     clearStreamContent,
-    addMessages,
   } = useChatStore();
 
   const handleSend = useCallback(

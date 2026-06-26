@@ -19,7 +19,6 @@ interface MessageBubbleProps {
 function CodeBlock({
   className,
   children,
-  ...props
 }: {
   className?: string;
   children?: React.ReactNode;
