@@ -1,4 +1,6 @@
+import json
 from collections.abc import AsyncGenerator
+from dataclasses import asdict
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -125,7 +127,7 @@ async def stream_message(
         ):
             yield {
                 "event": "token",
-                "data": chunk.model_dump_json(),
+                "data": json.dumps(asdict(chunk)),
             }
 
         yield {"event": "done", "data": ""}

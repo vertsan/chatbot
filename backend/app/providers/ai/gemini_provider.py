@@ -108,7 +108,7 @@ class GeminiProvider(AIProvider):
         temperature: float | None,
         top_p: float | None,
         max_tokens: int | None,
-        _tools: list[dict] | None,
+        tools: list[dict] | None,  # noqa: ARG002
     ) -> dict:
         contents = []
         for msg in messages:

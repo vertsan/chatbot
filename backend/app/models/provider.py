@@ -1,6 +1,6 @@
 from enum import Enum
 
-from sqlalchemy import JSON, Float, Integer, String, Text
+from sqlalchemy import JSON, Float, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database.base import Entity

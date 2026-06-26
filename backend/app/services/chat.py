@@ -77,7 +77,7 @@ class ChatService:
 
     async def send_message(
         self,
-        _user_id: str,
+        user_id: str,  # noqa: ARG002
         conversation_id: str,
         data: MessageSend,
     ) -> ServiceResult:
@@ -102,7 +102,7 @@ class ChatService:
 
     async def stream_message(
         self,
-        _user_id: str,
+        user_id: str,  # noqa: ARG002
         conversation_id: str,
         data: MessageSend,
     ) -> AsyncGenerator[StreamChunk]:

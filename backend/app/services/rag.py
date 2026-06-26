@@ -30,7 +30,7 @@ class RAGService:
         file_name: str,
         file_path: str,
         file_size: int,
-        _mime_type: str,
+        mime_type: str,  # noqa: ARG002
     ) -> ServiceResult:
         kb = await self.kb_repo.get(kb_id)
         if not kb:
@@ -129,7 +129,7 @@ class RAGService:
             "total_chunks": len(relevant_chunks),
         })
 
-    def _detect_document_type(self, file_name: str, _mime_type: str) -> str:
+    def _detect_document_type(self, file_name: str, mime_type: str) -> str:  # noqa: ARG002
         ext = Path(file_name).suffix.lower()
         type_map = {
             ".pdf": "pdf",
