@@ -1,0 +1,20 @@
+FROM python:3.13-slim
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libpq-dev && \
+    rm -rf /var/lib/apt/lists/*
+
+COPY backend/pyproject.toml .
+RUN pip install --no-cache-dir -e ".[dev]"
+
+COPY backend/ .
+
+RUN addgroup --system --gid 1001 app && \
+    adduser --system --uid 1001 app && \
+    chown -R app:app /app
+
+USER app
+
+CMD ["celery", "-A", "app.workers.celery_app", "worker", "--loglevel=info", "--concurrency=4"]

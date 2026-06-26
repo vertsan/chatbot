@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chatbot-backend
+  labels:
+    app: chatbot
+    component: backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: chatbot
+      component: backend
+  template:
+    metadata:
+      labels:
+        app: chatbot
+        component: backend
+    spec:
+      containers:
+        - name: backend
+          image: ghcr.io/your-org/chatbot-backend:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: chatbot-config
+            - secretRef:
+                name: chatbot-secrets
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "512Mi"
+            limits:
+              cpu: "2"
+              memory: "2Gi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: chatbot-backend
+  labels:
+    app: chatbot
+    component: backend
+spec:
+  selector:
+    app: chatbot
+    component: backend
+  ports:
+    - port: 8000
+      targetPort: 8000
+      protocol: TCP
+      name: http
+  type: ClusterIP

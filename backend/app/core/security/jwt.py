@@ -1,0 +1,55 @@
+from datetime import datetime, timedelta, timezone
+from typing import Any
+
+from jose import JWTError, jwt
+
+from app.core.config import settings
+
+
+def create_access_token(
+    subject: str, extra_claims: dict[str, Any] | None = None
+) -> str:
+    expires_delta = timedelta(minutes=settings.jwt_access_token_expire_minutes)
+    now = datetime.now(timezone.utc)
+    claims = {
+        "sub": subject,
+        "iat": now,
+        "exp": now + expires_delta,
+        "type": "access",
+    }
+    if extra_claims:
+        claims.update(extra_claims)
+    return jwt.encode(
+        claims, settings.jwt_secret_key, algorithm=settings.jwt_algorithm
+    )
+
+
+def create_refresh_token(subject: str) -> str:
+    expires_delta = timedelta(days=settings.jwt_refresh_token_expire_days)
+    now = datetime.now(timezone.utc)
+    claims = {
+        "sub": subject,
+        "iat": now,
+        "exp": now + expires_delta,
+        "type": "refresh",
+    }
+    return jwt.encode(
+        claims, settings.jwt_secret_key, algorithm=settings.jwt_algorithm
+    )
+
+
+def decode_token(token: str) -> dict[str, Any]:
+    try:
+        payload = jwt.decode(
+            token, settings.jwt_secret_key, algorithms=[settings.jwt_algorithm]
+        )
+        return payload
+    except JWTError:
+        raise ValueError("Invalid token")
+
+
+def verify_token(token: str, expected_type: str = "access") -> dict[str, Any]:
+    payload = decode_token(token)
+    if payload.get("type") != expected_type:
+        raise ValueError(f"Invalid token type: expected {expected_type}")
+    return payload
