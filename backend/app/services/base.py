@@ -14,8 +14,8 @@ class ServiceResult:
         return cls(success=True, data=data, status_code=status_code)
 
     @classmethod
-    def error(
-        cls, message: str, status_code: int = 400, data: Any = None
+    def error_response(
+        cls, message: str, status_code: int = 400, data: dict[str, Any] | None = None
     ) -> "ServiceResult":
         return cls(
             success=False, error=message, status_code=status_code, data=data

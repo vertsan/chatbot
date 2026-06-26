@@ -37,7 +37,7 @@ class RAGService:
     ) -> ServiceResult:
         kb = await self.kb_repo.get(kb_id)
         if not kb:
-            return ServiceResult.error("Knowledge base not found", 404)
+            return ServiceResult.error_response("Knowledge base not found", 404)
 
         import magic
         mime = magic.from_file(file_path, mime=True)
@@ -58,7 +58,7 @@ class RAGService:
     async def process_document(self, document_id: str) -> ServiceResult:
         doc = await self.doc_repo.get(document_id)
         if not doc:
-            return ServiceResult.error("Document not found", 404)
+            return ServiceResult.error_response("Document not found", 404)
 
         await self.doc_repo.update(document_id, status=DocumentStatus.PROCESSING)
 
@@ -88,7 +88,7 @@ class RAGService:
                 status=DocumentStatus.ERROR,
                 error_message=str(e),
             )
-            return ServiceResult.error(f"Failed to process document: {e}")
+            return ServiceResult.error_response(f"Failed to process document: {e}")
 
         return ServiceResult.ok({"chunks": len(chunks)})
 
@@ -101,7 +101,7 @@ class RAGService:
     ) -> ServiceResult:
         kb = await self.kb_repo.get(kb_id)
         if not kb:
-            return ServiceResult.error("Knowledge base not found", 404)
+            return ServiceResult.error_response("Knowledge base not found", 404)
 
         documents, total = await self.doc_repo.get_by_knowledge_base(kb_id)
         relevant_chunks = []

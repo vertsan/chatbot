@@ -29,7 +29,7 @@ class TestAuthEndpoints:
         )
         assert response.status_code == 422  # Validation error
 
-    async def test_login_validation(self, client):
+    async def test_login_validation(self, client: AsyncClient) -> None:
         response = await client.post(
             "/api/v1/auth/login",
             json={"email": "invalid"},

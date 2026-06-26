@@ -20,7 +20,7 @@ async def get_current_user(
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail=str(e),
-        )
+        ) from e
 
     user_id = payload.get("sub")
     if not user_id:

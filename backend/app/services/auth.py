@@ -23,7 +23,7 @@ class AuthService:
     ) -> ServiceResult:
         existing = await self.user_repo.get_by_email(email)
         if existing:
-            return ServiceResult.error("Email already registered", 409)
+            return ServiceResult.error_response("Email already registered", 409)
 
         user = await self.user_repo.create(
             email=email,
@@ -40,15 +40,15 @@ class AuthService:
     async def login(self, email: str, password: str) -> ServiceResult:
         user = await self.user_repo.get_by_email(email)
         if not user:
-            return ServiceResult.error("Invalid credentials", 401)
+            return ServiceResult.error_response("Invalid credentials", 401)
         if not user.password_hash:
-            return ServiceResult.error(
+            return ServiceResult.error_response(
                 "Account uses OAuth. Please sign in with your provider.", 401
             )
         if not verify_password(password, user.password_hash):
-            return ServiceResult.error("Invalid credentials", 401)
+            return ServiceResult.error_response("Invalid credentials", 401)
         if not user.is_active:
-            return ServiceResult.error("Account is deactivated", 403)
+            return ServiceResult.error_response("Account is deactivated", 403)
 
         tokens = self._generate_tokens(user.id)
         return ServiceResult.ok({"user": user, **tokens})
@@ -57,15 +57,15 @@ class AuthService:
         try:
             payload = decode_token(refresh_token)
             if payload.get("type") != "refresh":
-                return ServiceResult.error("Invalid token type", 401)
+                return ServiceResult.error_response("Invalid token type", 401)
             user_id = payload.get("sub")
             user = await self.user_repo.get(user_id)
             if not user or not user.is_active:
-                return ServiceResult.error("User not found or inactive", 401)
+                return ServiceResult.error_response("User not found or inactive", 401)
             tokens = self._generate_tokens(user.id)
             return ServiceResult.ok(tokens)
         except ValueError:
-            return ServiceResult.error("Invalid or expired token", 401)
+            return ServiceResult.error_response("Invalid or expired token", 401)
 
     async def oauth_login(
         self, provider: str, provider_id: str, email: str, display_name: str
@@ -74,7 +74,7 @@ class AuthService:
         if not user:
             existing = await self.user_repo.get_by_email(email)
             if existing:
-                return ServiceResult.error(
+                return ServiceResult.error_response(
                     "Email already registered with a different method", 409
                 )
             user = await self.user_repo.create(

@@ -41,7 +41,7 @@ class ChatService:
     ) -> ServiceResult:
         chat = await self.chat_repo.get(data.chat_id)
         if not chat:
-            return ServiceResult.error("Chat not found", 404)
+            return ServiceResult.error_response("Chat not found", 404)
 
         conversation = await self.conversation_repo.create(
             chat_id=data.chat_id,
@@ -76,7 +76,7 @@ class ChatService:
     ) -> ServiceResult:
         conversation = await self.conversation_repo.get(conversation_id)
         if not conversation:
-            return ServiceResult.error("Conversation not found", 404)
+            return ServiceResult.error_response("Conversation not found", 404)
 
         message = await self.message_repo.create(
             conversation_id=conversation_id,

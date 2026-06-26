@@ -33,7 +33,7 @@ class ProviderService:
     async def create_provider(self, data: AIProviderCreate) -> ServiceResult:
         existing = await self.provider_repo.exists(name=data.name)
         if existing:
-            return ServiceResult.error("Provider already exists", 409)
+            return ServiceResult.error_response("Provider already exists", 409)
 
         provider = await self.provider_repo.create(**data.model_dump())
         return ServiceResult.ok(provider, status_code=201)
@@ -41,7 +41,7 @@ class ProviderService:
     async def get_provider_models(self, provider_id: str) -> ServiceResult:
         provider = await self.provider_repo.get(provider_id)
         if not provider:
-            return ServiceResult.error("Provider not found", 404)
+            return ServiceResult.error_response("Provider not found", 404)
 
         models = await self.model_repo.get_by_provider(provider_id)
         return ServiceResult.ok(models)

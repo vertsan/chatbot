@@ -44,8 +44,8 @@ def decode_token(token: str) -> dict[str, Any]:
             token, settings.jwt_secret_key, algorithms=[settings.jwt_algorithm]
         )
         return payload
-    except JWTError:
-        raise ValueError("Invalid token")
+    except JWTError as exc:
+        raise ValueError("Invalid token") from exc
 
 
 def verify_token(token: str, expected_type: str = "access") -> dict[str, Any]:
