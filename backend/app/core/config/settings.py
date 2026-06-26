@@ -40,11 +40,11 @@ class Settings(BaseSettings):
     app_name: str = "Chatbot Platform"
     app_version: str = "1.0.0"
     debug: bool = False
-    secret_key: str
+    secret_key: str = "development-secret-key-change-in-production"
     environment: Environment = Environment.DEVELOPMENT
 
     # Database
-    database_url: PostgresDsn
+    database_url: PostgresDsn = "postgresql+asyncpg://chatbot:chatbot@localhost:5432/chatbot"  # type: ignore
     database_pool_size: int = 20
     database_max_overflow: int = 40
 
@@ -66,7 +66,7 @@ class Settings(BaseSettings):
     local_storage_path: Path = Path("uploads")
 
     # JWT
-    jwt_secret_key: str
+    jwt_secret_key: str = "development-jwt-secret-change-in-production"
     jwt_algorithm: str = "HS256"
     jwt_access_token_expire_minutes: int = 30
     jwt_refresh_token_expire_days: int = 7
