@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from datetime import datetime
 from enum import Enum
 
@@ -42,19 +44,19 @@ class User(SoftDeletable):
     )
     metadata_: Mapped[str | None] = mapped_column(Text, nullable=True)
 
-    sessions: Mapped[list["UserSession"]] = relationship(
+    sessions: Mapped[list[UserSession]] = relationship(
         back_populates="user", cascade="all, delete-orphan"
     )
-    api_keys: Mapped[list["UserAPIKey"]] = relationship(
+    api_keys: Mapped[list[UserAPIKey]] = relationship(
         back_populates="user", cascade="all, delete-orphan"
     )
-    organization_memberships: Mapped[list["OrganizationMember"]] = relationship(
+    organization_memberships: Mapped[list[OrganizationMember]] = relationship(
         back_populates="user", cascade="all, delete-orphan"
     )
-    conversations: Mapped[list["Conversation"]] = relationship(
+    conversations: Mapped[list[Conversation]] = relationship(
         back_populates="user", cascade="all, delete-orphan"
     )
-    settings: Mapped[list["UserSetting"]] = relationship(
+    settings: Mapped[list[UserSetting]] = relationship(
         back_populates="user", cascade="all, delete-orphan"
     )
 
@@ -78,7 +80,7 @@ class UserSession(Entity):
         DateTime(timezone=True), nullable=True
     )
 
-    user: Mapped["User"] = relationship(back_populates="sessions")
+    user: Mapped[User] = relationship(back_populates="sessions")
 
 
 class UserAPIKey(SoftDeletable):
@@ -98,4 +100,4 @@ class UserAPIKey(SoftDeletable):
     )
     is_active: Mapped[bool] = mapped_column(default=True, nullable=False)
 
-    user: Mapped["User"] = relationship(back_populates="api_keys")
+    user: Mapped[User] = relationship(back_populates="api_keys")

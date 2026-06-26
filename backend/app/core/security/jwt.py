@@ -19,7 +19,7 @@ def create_access_token(
     }
     if extra_claims:
         claims.update(extra_claims)
-    return jwt.encode(
+    return jwt.encode(  # type: ignore[no-any-return]
         claims, settings.jwt_secret_key, algorithm=settings.jwt_algorithm
     )
 
@@ -33,7 +33,7 @@ def create_refresh_token(subject: str) -> str:
         "exp": now + expires_delta,
         "type": "refresh",
     }
-    return jwt.encode(
+    return jwt.encode(  # type: ignore[no-any-return]
         claims, settings.jwt_secret_key, algorithm=settings.jwt_algorithm
     )
 
@@ -43,7 +43,7 @@ def decode_token(token: str) -> dict[str, Any]:
         payload = jwt.decode(
             token, settings.jwt_secret_key, algorithms=[settings.jwt_algorithm]
         )
-        return payload
+        return payload  # type: ignore[no-any-return]
     except JWTError as exc:
         raise ValueError("Invalid token") from exc
 

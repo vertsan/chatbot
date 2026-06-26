@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from enum import Enum
 
 from sqlalchemy import ForeignKey, String, Text
@@ -27,8 +29,8 @@ class Organization(SoftDeletable):
     max_members: Mapped[int] = mapped_column(default=100, nullable=False)
     metadata_: Mapped[str | None] = mapped_column(Text, nullable=True)
 
-    owner: Mapped["User"] = relationship(foreign_keys=[owner_id])
-    members: Mapped[list["OrganizationMember"]] = relationship(
+    owner: Mapped[User] = relationship(foreign_keys=[owner_id])
+    members: Mapped[list[OrganizationMember]] = relationship(
         back_populates="organization", cascade="all, delete-orphan"
     )
 
@@ -47,5 +49,5 @@ class OrganizationMember(Entity):
     )
     is_active: Mapped[bool] = mapped_column(default=True, nullable=False)
 
-    organization: Mapped["Organization"] = relationship(back_populates="members")
-    user: Mapped["User"] = relationship(back_populates="organization_memberships")
+    organization: Mapped[Organization] = relationship(back_populates="members")
+    user: Mapped[User] = relationship(back_populates="organization_memberships")

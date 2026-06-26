@@ -49,12 +49,12 @@ class Settings(BaseSettings):
     database_max_overflow: int = 40
 
     # Redis
-    redis_url: RedisDsn = "redis://localhost:6379/0"
+    redis_url: RedisDsn = "redis://localhost:6379/0"  # type: ignore[assignment]
     redis_max_connections: int = 50
 
     # Celery
-    celery_broker_url: RedisDsn = "redis://localhost:6379/1"
-    celery_result_backend: RedisDsn = "redis://localhost:6379/2"
+    celery_broker_url: RedisDsn = "redis://localhost:6379/1"  # type: ignore[assignment]
+    celery_result_backend: RedisDsn = "redis://localhost:6379/2"  # type: ignore[assignment]
 
     # Storage
     storage_type: StorageType = StorageType.S3

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from datetime import datetime
 from enum import Enum
 
@@ -45,9 +47,9 @@ class Chat(Entity):
     is_active: Mapped[bool] = mapped_column(default=True, nullable=False)
     metadata_: Mapped[dict | None] = mapped_column(JSON, nullable=True)
 
-    user: Mapped["User"] = relationship()
-    model: Mapped["AIModel"] = relationship()
-    conversations: Mapped[list["Conversation"]] = relationship(
+    user: Mapped[User] = relationship()
+    model: Mapped[AIModel] = relationship()
+    conversations: Mapped[list[Conversation]] = relationship(
         back_populates="chat", cascade="all, delete-orphan"
     )
 
@@ -80,9 +82,9 @@ class Conversation(SoftDeletable):
         DateTime(timezone=True), nullable=True
     )
 
-    chat: Mapped["Chat"] = relationship(back_populates="conversations")
-    user: Mapped["User"] = relationship(back_populates="conversations")
-    messages: Mapped[list["Message"]] = relationship(
+    chat: Mapped[Chat] = relationship(back_populates="conversations")
+    user: Mapped[User] = relationship(back_populates="conversations")
+    messages: Mapped[list[Message]] = relationship(
         back_populates="conversation",
         cascade="all, delete-orphan",
         order_by="Message.created_at",
@@ -116,8 +118,8 @@ class Message(Entity):
         String(36), ForeignKey("messages.id"), nullable=True
     )
 
-    conversation: Mapped["Conversation"] = relationship(back_populates="messages")
-    attachments: Mapped[list["Attachment"]] = relationship(
+    conversation: Mapped[Conversation] = relationship(back_populates="messages")
+    attachments: Mapped[list[Attachment]] = relationship(
         back_populates="message", cascade="all, delete-orphan"
     )
 
@@ -135,4 +137,4 @@ class Attachment(Entity):
     storage_type: Mapped[str] = mapped_column(String(50), default="local")
     metadata_: Mapped[dict | None] = mapped_column(JSON, nullable=True)
 
-    message: Mapped["Message"] = relationship(back_populates="attachments")
+    message: Mapped[Message] = relationship(back_populates="attachments")

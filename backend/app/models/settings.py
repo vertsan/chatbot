@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from sqlalchemy import JSON, ForeignKey, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -27,7 +29,7 @@ class UserSetting(Entity):
     value: Mapped[str | None] = mapped_column(Text, nullable=True)
     value_json: Mapped[dict | None] = mapped_column(JSON, nullable=True)
 
-    user: Mapped["User"] = relationship(back_populates="settings")
+    user: Mapped[User] = relationship(back_populates="settings")
 
     __table_args__ = (
         {"extend_existing": True},
